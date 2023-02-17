@@ -36,7 +36,7 @@ function BasicKnobX(values) {
     )
 }
 
-class PhaserComponent extends React.Component {
+class Phaser001Component extends React.Component {
 
     constructor(props) {
         super(props);
@@ -54,9 +54,14 @@ class PhaserComponent extends React.Component {
                 height: 600
             },
             physics: {
-                default: 'arcade',
-                arcade: {
-                    gravity: { y: 0 }
+                default: 'matter',
+                matter: {
+                    gravity: {
+                        scale: 0
+                    },
+                    plugins: {
+                        attractors: true
+                    }
                 }
             },
             scene: {
@@ -73,36 +78,42 @@ class PhaserComponent extends React.Component {
     }
 
     preload() {
-        this.load.multiatlas('cityscene', 'assets/cityscene.json', 'assets');
+        this.load.image('sun', 'assets/tests/space/sun.png');
+        this.load.image('alien', 'assets/sprites/space-baddie.png');
     }
 
     create() {
-        var capguy;
-        var background = this.add.sprite(400, 300, 'cityscene', 'background.png');
+        //  You can enable the Attractors plugin either via the game config (see above), or explicitly in code:
+        // this.matter.enableAttractorPlugin();
 
-        capguy = this.add.sprite(0, 400, 'cityscene', 'capguy/walk/0001.png');
-        capguy.setScale(0.5, 0.5);
+        this.matter.world.setBounds();
 
-        var frameNames = this.anims.generateFrameNames('cityscene', {
-            start: 1, end: 8, zeroPad: 4,
-            prefix: 'capguy/walk/', suffix: '.png'
+        this.matter.add.imageStack('alien', null, 0, 500, 50, 20, 0, 0, {
+            mass: 1,
+            ignorePointer: true
         });
 
-        this.anims.create({ key: 'walk', frames: frameNames, frameRate: 10, repeat: -1 });
-        capguy.anims.play('walk');
-
-        this.data.set('data', {
-            capguy,
-            background
+        var sun = this.matter.add.image(400, 200, 'sun', null, {
+            shape: {
+                type: 'circle',
+                radius: 64
+            },
+            plugin: {
+                attractors: [
+                    function (bodyA, bodyB) {
+                        return {
+                            x: (bodyA.position.x - bodyB.position.x) * 0.0000001,
+                            y: (bodyA.position.y - bodyB.position.y) * 0.0000001
+                        };
+                    }
+                ]
+            }
         });
+
+        this.matter.add.mouseSpring();
     }
 
     update(time, delta) {
-        var data = this.data.get('data');
-        data.capguy.x += delta / 8;
-        if (data.capguy.x > 800) {
-            data.capguy.x = -50;
-        }
     }
 
     tick() {
@@ -143,4 +154,4 @@ class PhaserComponent extends React.Component {
     }
 }
 
-export default PhaserComponent 
+export default Phaser001Component 

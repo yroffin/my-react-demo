@@ -8,6 +8,7 @@ import { Menubar } from 'primereact/menubar';
 import { InputText } from 'primereact/inputtext';
 import Timer from './timer.jsx';
 import PhaserComponent from './PhaserComponent.jsx';
+import Phaser001Component from './Phaser001Component.jsx';
 import { useNavigate } from "react-router-dom";
 import { Routes } from 'react-router-dom';
 
@@ -156,8 +157,8 @@ function MenuComponentHook() {
         <div className="card">
             <Menubar model={items} start={start} end={end} />
             <Routes>
-                <Route path="/blogs" element={<Timer label="12" />} />
-                <Route path="/contact" element={<Timer label="13" />} />
+                <Route path="/blogs" element={<PhaserComponent />} />
+                <Route path="/contact" element={<Phaser001Component />} />
                 <Route path="*" element={<PhaserComponent />} />
             </Routes>
         </div>
